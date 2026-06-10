@@ -4,9 +4,9 @@ Rift Archive is a single-player gacha collection prototype built with HTML, CSS 
 
 # Screenshots
 
-![Rift Archive screenshot 1](screenshots\ss1.png)
-![Rift Archive screenshot 2](screenshots\ss2.png)
-![Rift Archive screenshot 3](screenshots\ss3.png)
+<img src="screenshots/ss1.png" width="800">
+<img src="screenshots/ss2.png" width="800">
+<img src="screenshots/ss3.png" width="800">
 
 ## Project Description
 
