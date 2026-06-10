@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rift Archive is a single-player gacha collection prototype with rarity-based pulls, pity, gems, inventory tracking, and persistent local saves.">
+    <link rel="stylesheet" href="styles.css">
+    <title>Rift Archive</title>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">Rift<span>Archive</span></div>
+            <div class="header-stats">
+                <button class="gem-display" onclick="openTopup()" type="button" aria-label="Open gem top up menu">
+                    <span class="gem-icon" aria-hidden="true"></span>
+                    <span class="gem-count" id="gem-count">3,200</span>
+                    <span class="gem-label">gems</span>
+                </button>
+                <button class="header-btn" onclick="confirmReset()" type="button">Reset save</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="pull-zone" aria-labelledby="summon-title">
+                <div class="pull-zone-header">
+                    <h1 id="summon-title">Summon</h1>
+                    <p>Spend gems to pull characters from all series.</p>
+                </div>
+
+                <section class="pity-section" aria-labelledby="pity-title">
+                    <div class="pity-header">
+                        <span class="pity-label" id="pity-title">SSR Pity</span>
+                        <span class="pity-value" id="pity-val">0 / 80</span>
+                    </div>
+                    <div class="pity-track" aria-hidden="true">
+                        <div class="pity-fill" id="pity-fill" style="width:0%"></div>
+                    </div>
+                    <div class="pity-milestones" aria-hidden="true">
+                        <span class="pity-milestone">0</span>
+                        <span class="pity-milestone">20</span>
+                        <span class="pity-milestone">40</span>
+                        <span class="pity-milestone">60</span>
+                        <span class="pity-milestone">80 ★</span>
+                    </div>
+                </section>
+
+                <div class="pull-buttons">
+                    <button class="pull-btn pull-btn-single" onclick="doSingle()" type="button">
+                        <span class="pull-btn-label">Single Pull</span>
+                        <span class="pull-btn-cost"><span class="dot"></span>160 gems</span>
+                    </button>
+                    <button class="pull-btn pull-btn-ten" onclick="doTen()" type="button">
+                        <span class="pull-btn-label">10 Pull</span>
+                        <span class="pull-btn-cost"><span class="dot"></span>1,600 gems</span>
+                    </button>
+                </div>
+
+                <section class="reveal-area" id="reveal-area" aria-live="polite" aria-label="Pull results">
+                    <div class="reveal-placeholder" id="reveal-placeholder">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M24 4l4.5 9.5L39 15l-7.5 7 2 10.5L24 28l-9.5 4.5 2-10.5L9 15l10.5-1.5L24 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Your pulled characters appear here.</p>
+                    </div>
+                    <div class="reveal-cards" id="reveal-cards" style="display:none"></div>
+                </section>
+            </section>
+
+            <aside class="sidebar" aria-label="Collection sidebar">
+                <div class="sidebar-tabs">
+                    <button class="sidebar-tab active" onclick="showTab('collection',this)" type="button">Collection</button>
+                    <button class="sidebar-tab" onclick="showTab('history',this)" type="button">History</button>
+                </div>
+
+                <div class="sidebar-content">
+                    <section id="tab-collection" aria-labelledby="collection-title">
+                        <h2 class="sr-only" id="collection-title">Collection</h2>
+                        <div class="cstats">
+                            <div class="cstat">
+                                <div class="cstat-label">Collected</div>
+                                <div class="cstat-value" id="cstat-collected">0<span style="font-size:12px;color:var(--muted)"> / 32</span></div>
+                                <div class="progress-bar"><div class="progress-fill" id="cstat-bar" style="width:0%"></div></div>
+                            </div>
+                            <div class="cstat">
+                                <div class="cstat-label">Total pulls</div>
+                                <div class="cstat-value" id="cstat-pulls">0</div>
+                            </div>
+                            <div class="cstat">
+                                <div class="cstat-label">SSR owned</div>
+                                <div class="cstat-value gold" id="cstat-ssr">0</div>
+                            </div>
+                            <div class="cstat">
+                                <div class="cstat-label">Completion</div>
+                                <div class="cstat-value" id="cstat-pct">0%</div>
+                            </div>
+                        </div>
+
+                        <div class="filter-row" id="filter-row" aria-label="Collection filters">
+                            <button class="filter-btn active" onclick="setFilter('All',this)" type="button">All</button>
+                            <button class="filter-btn f-ssr" onclick="setFilter('SSR',this)" type="button">SSR</button>
+                            <button class="filter-btn f-sr" onclick="setFilter('SR',this)" type="button">SR</button>
+                            <button class="filter-btn f-r" onclick="setFilter('R',this)" type="button">R</button>
+                            <button class="filter-btn f-c" onclick="setFilter('C',this)" type="button">C</button>
+                        </div>
+
+                        <div class="inv-grid" id="inv-grid">
+                            <div style="grid-column:span 2;text-align:center;color:var(--faint);font-size:13px;padding:32px 0">
+                                Start pulling to build your collection.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="tab-history" style="display:none" aria-labelledby="history-title">
+                        <h2 class="sr-only" id="history-title">Pull history</h2>
+                        <div class="history-list" id="history-list">
+                            <div class="history-empty">No pulls yet</div>
+                        </div>
+                    </section>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <div class="modal-bg" id="topup-modal" role="dialog" aria-modal="true" aria-labelledby="topup-title">
+        <div class="modal">
+            <h2 id="topup-title">Top up gems</h2>
+            <p>Select an amount to add to your wallet.</p>
+            <div class="topup-grid">
+                <button class="topup-opt" onclick="addGems(800)" type="button"><span class="topup-gems">800</span><span class="topup-label">Starter pack</span></button>
+                <button class="topup-opt" onclick="addGems(1600)" type="button"><span class="topup-gems">1,600</span><span class="topup-label">One 10 pull</span></button>
+                <button class="topup-opt" onclick="addGems(3200)" type="button"><span class="topup-gems">3,200</span><span class="topup-label">Two 10 pulls</span></button>
+                <button class="topup-opt" onclick="addGems(8000)" type="button"><span class="topup-gems">8,000</span><span class="topup-label">Whale bundle</span></button>
+            </div>
+            <button class="modal-close" onclick="closeTopup()" type="button">Cancel</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
